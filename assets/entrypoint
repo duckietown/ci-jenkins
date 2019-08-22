@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# define constants
+DOCKER_SOCKET=/var/run/docker.sock
+DOCKER_GROUP=docker
+
+# make sure that a docker socket is present
+if [ ! -S ${DOCKER_SOCKET} ]; then
+    echo "Docker socket NOT found!"
+    echo "Make sure that you mounted the Docker socket to '${DOCKER_SOCKET}'."
+    echo "Exiting..."
+    exit
+fi
+
+# get docker GID
+DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
+
+# make sure that the docker group does not exist
+if [ $(getent group ${DOCKER_GROUP}) ]; then
+  echo "Group '${DOCKER_GROUP}' found. No need to create it."
+else
+  # try to create a new group with GID=DOCKER_GID
+  echo "Creating group '${DOCKER_GROUP}'..."
+  sudo groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
+  if [ $? -ne 0 ]; then
+    exit
+  fi
+  sudo usermod -a -G ${DOCKER_GROUP} `whoami`
+  echo "Done!"
+fi
+
+# run jenkins
+exec sg ${DOCKER_GROUP} "/sbin/tini -- /usr/local/bin/jenkins.sh $*"
