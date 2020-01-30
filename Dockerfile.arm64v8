@@ -85,10 +85,10 @@ RUN curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.190}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.219}
 
 # jenkins.war checksum, download will be validated using it
-ARG JENKINS_SHA=6661f174902f476707eb03d0b0925801790277443115956a433135f268fe31e9
+ARG JENKINS_SHA=49757dcf796f7c8714d915eeaa22effcf50546e716b7d818183c304c30005b7e
 
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
@@ -150,11 +150,11 @@ RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
 # Install duckietown-shell
 RUN pip3 install --upgrade duckietown-shell
 
-USER ${user}
+# Configure PATH
+ENV PATH=/var/jenkins_home/.local/bin/:${PATH}
 
-# Configure DTS
-RUN dts update
-RUN dts install devel
+# Switch back to jenkins user
+USER ${user}
 
 # copy entrypoint
 COPY assets/entrypoint /entrypoint
