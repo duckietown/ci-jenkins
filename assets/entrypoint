@@ -2,6 +2,7 @@
 
 # define constants
 DOCKER_SOCKET=/var/run/docker.sock
+JENKINS_HOME=/var/jenkins_home
 DOCKER_GROUP=docker
 
 # make sure that a docker socket is present
@@ -9,7 +10,14 @@ if [ ! -S ${DOCKER_SOCKET} ]; then
     echo "Docker socket NOT found!"
     echo "Make sure that you mounted the Docker socket to '${DOCKER_SOCKET}'."
     echo "Exiting..."
-    exit
+    exit 1
+fi
+
+# make sure that the JENKINS_HOME is mounted
+mountpoint -q ${JENKINS_HOME}
+if [ $? -ne 0 ]; then
+  echo "ERROR: The path '${JENKINS_HOME}' is not mounted. Refusing to run without external bind."
+  exit 2
 fi
 
 # get docker GID
