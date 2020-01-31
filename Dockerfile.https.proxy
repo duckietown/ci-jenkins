@@ -46,6 +46,9 @@ COPY assets/https_proxy/etc/apache2/sites-available/000-default-ssl.conf /etc/ap
 RUN a2ensite 000-default
 RUN a2ensite 000-default-ssl
 
+# setup the command
+CMD apachectl -D FOREGROUND
+
 # configure HTTP/HTTPS port
 EXPOSE ${PROXY_HTTP_PORT}/tcp
 EXPOSE ${PROXY_HTTPS_PORT}/tcp
