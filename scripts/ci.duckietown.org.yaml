@@ -18,6 +18,8 @@ services:
     ports:
       - 80:80/tcp
       - 443:443/tcp
+    links:
+      - jenkins
     volumes:
       - ${CERTFILE_LOCAL}:/var/www/ssl/certfile.pem
       - ${PRIVKEY_LOCAL}:/var/www/ssl/privkey.pem
