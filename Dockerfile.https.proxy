@@ -1,0 +1,51 @@
+ARG ARCH=arm64v8
+ARG OS_FAMILY=debian
+ARG OS_DISTRO=stretch
+
+FROM ${ARCH}/${OS_FAMILY}:${OS_DISTRO}
+
+# recover arguments
+ARG ARCH
+ARG OS_FAMILY
+ARG OS_DISTRO
+
+# configure environment: system & libraries
+ENV ARCH=${ARCH}
+ENV OS_FAMILY=${OS_FAMILY}
+ENV OS_DISTRO=${OS_DISTRO}
+
+# configure environment
+ENV APP_DIR "/var/www"
+ENV JENKINS_HTTP_PORT 8080
+ENV PROXY_HTTP_PORT 443
+ENV PROXY_HTTPS_PORT 443
+ENV SSL_DIR "${APP_DIR}/ssl"
+ENV SSL_CERTFILE "${SSL_DIR}/certfile.pem"
+ENV SSL_KEYFILE "${SSL_DIR}/privkey.pem"
+ENV QEMU_EXECVE 1
+
+# Add QEMU support
+COPY ./assets/qemu/${ARCH}/ /usr/bin/
+
+# install apt dependencies
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    apache2 \
+  && rm -rf /var/lib/apt/lists/*
+
+# enable apache mods
+RUN a2enmod ssl
+RUN a2enmod proxy
+RUN a2enmod proxy_http
+
+# update website configuration file
+COPY assets/https_proxy/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY assets/https_proxy/etc/apache2/sites-available/000-default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
+
+# enable HTTP/s website
+RUN a2ensite 000-default
+RUN a2ensite 000-default-ssl
+
+# configure HTTP/HTTPS port
+EXPOSE ${PROXY_HTTP_PORT}/tcp
+EXPOSE ${PROXY_HTTPS_PORT}/tcp
