@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ci.duckietown.org.env
+
+docker-compose -p ${SITENAME} --file ${SITENAME}.yaml down
