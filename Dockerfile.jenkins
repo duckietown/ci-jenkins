@@ -127,11 +127,13 @@ USER root
 
 # install docker binaries
 RUN /bin/bash -c '\
+  set -ex; \
+  declare -A _arch; \
   _arch=(["arm32v7"]="armhf" ["arm64v8"]="aarch64" ["amd64"]="x86_64") \
   && docker_arch="${_arch[$ARCH]}" \
   && cd /tmp \
   # download binaries
-  && wget \
+  && wget -nv \
     "${DOCKER_DOWNLOAD_URL}/${docker_arch}/docker-${DOCKER_VERSION}.tgz" \
     -O ./docker-bin.tgz \
   # extract binaries
