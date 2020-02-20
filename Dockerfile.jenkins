@@ -47,6 +47,7 @@ RUN apt update \
     unzip \
     libfreetype6 \
     libfontconfig1 \
+    openssh-client \
   # dependencies needed to run dt-shell
     python3 \
     python3-pip \
