@@ -127,9 +127,6 @@ ENV PATH=${JENKINS_HOME}/.local/bin/:${PATH}
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
 
-# Add QEMU support
-COPY ./assets/qemu/${ARCH}/ /usr/bin/
-
 # Upgrade env
 RUN apt update \
   && apt-get upgrade -y \
