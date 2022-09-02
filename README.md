@@ -1,3 +1,3 @@
-# jenkins
+# CI Jenkins
 
-Jenkins for Duckietown
+Jenkins application image for the Duckietown CI Infrastructure.

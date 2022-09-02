@@ -1,8 +1,20 @@
 #!/bin/bash
 
+source /environment.sh
+
+# initialize launch file
+dt-launchfile-init
+
+# YOUR CODE BELOW THIS LINE
+# ----------------------------------------------------------------------------
+
+
+# NOTE: Use the variable DT_REPO_PATH to know the absolute path to your code
+# NOTE: Use `dt-exec COMMAND` to run the main process (blocking process)
+
 # define constants
 DOCKER_SOCKET=/var/run/docker.sock
-JENKINS_HOME=/var/jenkins_home
+JENKINS_HOME=/home/duckie
 DOCKER_GROUP=docker
 
 # make sure that a docker socket is present
@@ -38,4 +50,13 @@ else
 fi
 
 # run jenkins
-exec sg ${DOCKER_GROUP} "/sbin/tini -- /usr/local/bin/jenkins.sh $*"
+dt-exec sudo -u duckie /bin/bash -c "/usr/local/bin/jenkins.sh $*"
+
+# revoke sudo permissions
+sudo rm /etc/sudoers.d/duckie
+
+# ----------------------------------------------------------------------------
+# YOUR CODE ABOVE THIS LINE
+
+# wait for app to end
+dt-launchfile-join

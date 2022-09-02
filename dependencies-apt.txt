@@ -1,0 +1,27 @@
+# LIST YOUR APT PACKAGES HERE
+
+# generic dependencies
+wget
+sudo
+git
+curl
+gpg
+gpg-agent
+unzip
+libfreetype6
+libfontconfig1
+openssh-client
+
+# java 11
+openjdk-11-jre-headless
+
+# dependencies needed to run dt-shell
+python3
+python3-pip
+python3-setuptools
+python3-wheel
+python3-dev
+build-essential
+libxml2-dev
+libxslt-dev
+zlib1g-dev
