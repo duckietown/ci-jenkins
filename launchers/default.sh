@@ -14,7 +14,7 @@ dt-launchfile-init
 
 # define constants
 DOCKER_SOCKET=/var/run/docker.sock
-JENKINS_HOME=/home/duckie
+JENKINS_HOME=/home/duckie/.jenkins
 DOCKER_GROUP=docker
 
 # make sure that a docker socket is present
