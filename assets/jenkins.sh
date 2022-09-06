@@ -1,7 +1,7 @@
 #! /bin/bash -e
 
 : "${JENKINS_WAR:="/usr/share/jenkins/jenkins.war"}"
-: "${JENKINS_HOME:="/home/duckie"}"
+: "${JENKINS_HOME:="/home/duckie/user-data"}"
 : "${COPY_REFERENCE_FILE_LOG:="${JENKINS_HOME}/copy_reference_file.log"}"
 : "${REF:="/usr/share/jenkins/ref"}"
 touch "${COPY_REFERENCE_FILE_LOG}" || { echo "Can not write to ${COPY_REFERENCE_FILE_LOG}. Wrong volume permissions?"; exit 1; }
