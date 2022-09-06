@@ -52,9 +52,6 @@ fi
 # run jenkins
 dt-exec sudo -u duckie /bin/bash -c "/usr/local/bin/jenkins.sh $*"
 
-# revoke sudo permissions
-sudo rm /etc/sudoers.d/duckie
-
 # ----------------------------------------------------------------------------
 # YOUR CODE ABOVE THIS LINE
 
