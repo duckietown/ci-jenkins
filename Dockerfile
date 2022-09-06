@@ -11,7 +11,7 @@ ARG UID=1000
 ARG GID=1000
 ARG HTTP_PORT=8080
 ARG AGENT_PORT=50000
-ARG JENKINS_HOME=/home/duckie/.jenkins
+ARG JENKINS_HOME=/home/duckie
 ARG REF=/usr/share/jenkins/ref
 
 # Jenkins version (and jenkins.war SHA-256 checksum, download will be validated using it)
