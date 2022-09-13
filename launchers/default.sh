@@ -19,7 +19,7 @@ DOCKER_GROUP=docker
 
 # make sure that a docker socket is present
 if [ ! -S ${DOCKER_SOCKET} ]; then
-    echo "Docker socket NOT found!"
+    echo "FATAL: Docker socket NOT found!"
     echo "Make sure that you mounted the Docker socket to '${DOCKER_SOCKET}'."
     echo "Exiting..."
     exit 1
@@ -28,8 +28,15 @@ fi
 # make sure that the JENKINS_HOME is mounted
 mountpoint -q ${JENKINS_HOME}
 if [ $? -ne 0 ]; then
-  echo "ERROR: The path '${JENKINS_HOME}' is not mounted. Refusing to run without external bind."
-  exit 2
+    if [ "${ISOLATED}" != "1" ]; then
+        echo "FATAL: User-data NOT mounted!"
+        echo "Make sure that you mounted the path '${JENKINS_HOME}'."
+        echo "Exiting..."
+        exit 2
+    else
+        echo "WARNING: User-data NOT mounted! Changes will be lost when the container is removed."
+        sudo -u duckie /bin/bash -c "mkdir -p ${JENKINS_HOME}"
+    fi
 fi
 
 # get docker GID
@@ -37,16 +44,16 @@ DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
 
 # make sure that the docker group does not exist
 if [ $(getent group ${DOCKER_GROUP}) ]; then
-  echo "Group '${DOCKER_GROUP}' found. No need to create it."
+    echo "Group '${DOCKER_GROUP}' found. No need to create it."
 else
-  # try to create a new group with GID=DOCKER_GID
-  echo "Creating group '${DOCKER_GROUP}'..."
-  sudo groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
-  if [ $? -ne 0 ]; then
-    exit
-  fi
-  sudo usermod -a -G ${DOCKER_GROUP} `whoami`
-  echo "Done!"
+    # try to create a new group with GID=DOCKER_GID
+    echo "Creating group '${DOCKER_GROUP}'..."
+    sudo groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
+    if [ $? -ne 0 ]; then
+        exit
+    fi
+    sudo usermod -a -G ${DOCKER_GROUP} `whoami`
+    echo "Done!"
 fi
 
 # run jenkins
