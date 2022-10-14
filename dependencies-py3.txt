@@ -2,3 +2,6 @@
 
 # duckietown shell
 duckietown-shell
+
+# API to docker
+pydock>=0.0.4

@@ -20,18 +20,17 @@ ARG JENKINS_SHA=141e8c5890a31a5cf37a970ce3e15273c1c74d8759e4a5873bb5511c50b47d89
 
 # ==================================================>
 # ==> Do not change the code below this line
-ARG ARCH=arm64v8
-ARG DISTRO=ente
-ARG BASE_TAG=${DISTRO}-${ARCH}
+ARG ARCH
+ARG DISTRO=daffy
+ARG DOCKER_REGISTRY=docker.io
 ARG BASE_IMAGE=dt-commons
+ARG BASE_TAG=${DISTRO}-${ARCH}
 ARG LAUNCHER=default
 
 # define base image
-ARG DOCKER_REGISTRY=docker.io
 FROM ${DOCKER_REGISTRY}/duckietown/${BASE_IMAGE}:${BASE_TAG} as BASE
 
 # recall all arguments
-ARG ARCH
 ARG DISTRO
 ARG REPO_NAME
 ARG DESCRIPTION
@@ -40,6 +39,11 @@ ARG ICON
 ARG BASE_TAG
 ARG BASE_IMAGE
 ARG LAUNCHER
+# - buildkit
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 # check build arguments
 RUN dt-build-env-check "${REPO_NAME}" "${MAINTAINER}" "${DESCRIPTION}"
@@ -47,18 +51,17 @@ RUN dt-build-env-check "${REPO_NAME}" "${MAINTAINER}" "${DESCRIPTION}"
 # define/create repository path
 ARG REPO_PATH="${SOURCE_DIR}/${REPO_NAME}"
 ARG LAUNCH_PATH="${LAUNCH_DIR}/${REPO_NAME}"
-RUN mkdir -p "${REPO_PATH}"
-RUN mkdir -p "${LAUNCH_PATH}"
+RUN mkdir -p "${REPO_PATH}" "${LAUNCH_PATH}"
 WORKDIR "${REPO_PATH}"
 
 # keep some arguments as environment variables
-ENV DT_MODULE_TYPE "${REPO_NAME}"
-ENV DT_MODULE_DESCRIPTION "${DESCRIPTION}"
-ENV DT_MODULE_ICON "${ICON}"
-ENV DT_MAINTAINER "${MAINTAINER}"
-ENV DT_REPO_PATH "${REPO_PATH}"
-ENV DT_LAUNCH_PATH "${LAUNCH_PATH}"
-ENV DT_LAUNCHER "${LAUNCHER}"
+ENV DT_MODULE_TYPE="${REPO_NAME}" \
+    DT_MODULE_DESCRIPTION="${DESCRIPTION}" \
+    DT_MODULE_ICON="${ICON}" \
+    DT_MAINTAINER="${MAINTAINER}" \
+    DT_REPO_PATH="${REPO_PATH}" \
+    DT_LAUNCH_PATH="${LAUNCH_PATH}" \
+    DT_LAUNCHER="${LAUNCHER}"
 
 # install apt dependencies
 COPY ./dependencies-apt.txt "${REPO_PATH}/"
@@ -67,17 +70,14 @@ RUN dt-apt-install ${REPO_PATH}/dependencies-apt.txt
 # install python3 dependencies
 ARG PIP_INDEX_URL="https://pypi.org/simple"
 ENV PIP_INDEX_URL=${PIP_INDEX_URL}
-RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
-
 COPY ./dependencies-py3.* "${REPO_PATH}/"
-RUN python3 -m pip install  -r ${REPO_PATH}/dependencies-py3.txt
+RUN python3 -m pip install -r ${REPO_PATH}/dependencies-py3.txt
 
 # copy the source code
 COPY ./packages "${REPO_PATH}/packages"
 
 # install launcher scripts
 COPY ./launchers/. "${LAUNCH_PATH}/"
-COPY ./launchers/default.sh "${LAUNCH_PATH}/"
 RUN dt-install-launchers "${LAUNCH_PATH}"
 
 # define default command
@@ -87,7 +87,9 @@ CMD ["bash", "-c", "dt-launcher-${DT_LAUNCHER}"]
 LABEL org.duckietown.label.module.type="${REPO_NAME}" \
     org.duckietown.label.module.description="${DESCRIPTION}" \
     org.duckietown.label.module.icon="${ICON}" \
-    org.duckietown.label.architecture="${ARCH}" \
+    org.duckietown.label.platform.os="${TARGETOS}" \
+    org.duckietown.label.platform.architecture="${TARGETARCH}" \
+    org.duckietown.label.platform.variant="${TARGETVARIANT}" \
     org.duckietown.label.code.location="${REPO_PATH}" \
     org.duckietown.label.code.version.distro="${DISTRO}" \
     org.duckietown.label.base.image="${BASE_IMAGE}" \
@@ -109,7 +111,10 @@ ARG REF
 ARG ARCH
 
 ARG DOCKER_DOWNLOAD_URL="https://download.docker.com/linux/static/stable"
-ARG DOCKER_VERSION="18.06.0-ce"
+ARG DOCKER_VERSION="20.10.7"
+
+ARG DOCKER_BUILDX_VERSION="0.9.1"
+ARG DOCKER_BUILDX_DOWNLOAD_URL="https://github.com/docker/buildx/releases/download/v${DOCKER_BUILDX_VERSION}/buildx-v${DOCKER_BUILDX_VERSION}.linux"
 
 ENV JENKINS_HOME ${JENKINS_HOME}
 ENV JENKINS_SLAVE_AGENT_PORT ${AGENT_PORT}
@@ -127,8 +132,9 @@ ENV PATH=${JENKINS_HOME}/.local/bin/:${PATH}
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
 
-# Upgrade env
-RUN apt update \
+# Upgrade env (excluding ROS)
+RUN rm /etc/apt/sources.list.d/ros.list \
+  && apt update \
   && apt-get upgrade -y \
   && rm -rf /var/lib/apt/lists/*
 
@@ -159,6 +165,19 @@ RUN /bin/bash -c '\
   && rm -rf \
     docker \
     docker-bin.tgz'
+
+# install docker buildx
+RUN /bin/bash -c '\
+  set -ex; \
+  mkdir -p /usr/lib/docker/cli-plugins; \
+  declare -A _arch; \
+  _arch=(["arm32v7"]="arm-v7" ["arm64v8"]="arm64" ["amd64"]="amd64") \
+  && docker_build_arch="${_arch[$ARCH]}" \
+  && cd /tmp \
+  # download binaries
+  && wget -nv \
+    "${DOCKER_BUILDX_DOWNLOAD_URL}-${docker_build_arch}" \
+    -O /usr/lib/docker/cli-plugins/docker-buildx'
 
 # give the jenkins USER the power to create GROUPs
 RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
