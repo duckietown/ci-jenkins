@@ -1,7 +1,11 @@
 # LIST YOUR PYTHON3 PACKAGES HERE
 
 # duckietown shell
-duckietown-shell
+duckietown-shell>=5.2.20
 
 # API to docker
 pydock>=0.0.4
+
+# used by the jobs
+pur
+
