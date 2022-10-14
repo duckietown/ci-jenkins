@@ -148,36 +148,43 @@ RUN mkdir -p ${REF}/init.groovy.d
 
 # install docker binaries
 RUN /bin/bash -c '\
+  # install docker CLI
   set -ex; \
+  # - pick correct architecture
   declare -A _arch; \
   _arch=(["arm32v7"]="armhf" ["arm64v8"]="aarch64" ["amd64"]="x86_64") \
   && docker_arch="${_arch[$ARCH]}" \
   && cd /tmp \
-  # download binaries
+  # - download binaries
   && wget -nv \
     "${DOCKER_DOWNLOAD_URL}/${docker_arch}/docker-${DOCKER_VERSION}.tgz" \
     -O ./docker-bin.tgz \
-  # extract binaries
+  # - extract binaries
   && tar -zxvf ./docker-bin.tgz \
-  # copy binaries to system dir
+  # - copy binaries to system dir
   && cp ./docker/* /usr/local/bin \
-  # clean up temp files
+  # - clean up temp files
   && rm -rf \
     docker \
     docker-bin.tgz'
 
 # install docker buildx
 RUN /bin/bash -c '\
+  # install docker buildx
   set -ex; \
+  # - prepare destination directory
   mkdir -p /usr/lib/docker/cli-plugins; \
+  # - pick correct architecture
   declare -A _arch; \
   _arch=(["arm32v7"]="arm-v7" ["arm64v8"]="arm64" ["amd64"]="amd64") \
   && docker_build_arch="${_arch[$ARCH]}" \
   && cd /tmp \
-  # download binaries
+  # - download docker-buildx
   && wget -nv \
     "${DOCKER_BUILDX_DOWNLOAD_URL}-${docker_build_arch}" \
-    -O /usr/lib/docker/cli-plugins/docker-buildx'
+    -O /usr/lib/docker/cli-plugins/docker-buildx \
+  # - make docker-buildx executable
+  && chmod +x /usr/lib/docker/cli-plugins/docker-buildx'
 
 # give the jenkins USER the power to create GROUPs
 RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
