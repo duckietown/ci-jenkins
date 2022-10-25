@@ -4,7 +4,7 @@
 duckietown-shell>=5.2.20
 
 # API to docker
-pydock>=0.0.4
+pydock>=0.0.5
 
 # used by the jobs
 pur
