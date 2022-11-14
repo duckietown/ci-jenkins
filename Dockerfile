@@ -15,8 +15,8 @@ ARG JENKINS_HOME=/home/duckie/user-data
 ARG REF=/usr/share/jenkins/ref
 
 # Jenkins version (and jenkins.war SHA-256 checksum, download will be validated using it)
-ARG JENKINS_VERSION=2.346.3
-ARG JENKINS_SHA=141e8c5890a31a5cf37a970ce3e15273c1c74d8759e4a5873bb5511c50b47d89
+ARG JENKINS_VERSION=2.361.4
+ARG JENKINS_SHA=b38fe218afb5447b0c9a6fa308d7ab762ac5a58dd89aa68b735067ad6c37c17b
 
 # ==================================================>
 # ==> Do not change the code below this line
