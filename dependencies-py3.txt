@@ -9,3 +9,5 @@ pydock>=0.0.5
 # used by the jobs
 pur
 
+# used to pin dependencies list to newest version available on pypi
+dt-pip-utils
