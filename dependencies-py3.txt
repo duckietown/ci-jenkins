@@ -10,4 +10,4 @@ pydock>=0.0.5
 pur
 
 # used to pin dependencies list to newest version available on pypi
-dt-pip-utils>=0.0.3
+dt-pip-utils>=0.0.4
