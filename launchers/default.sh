@@ -14,7 +14,6 @@ dt-launchfile-init
 
 # define constants
 DOCKER_SOCKET=/var/run/docker.sock
-JENKINS_HOME=/home/duckie/user-data
 DOCKER_GROUP=docker
 
 # make sure that a docker socket is present
@@ -35,7 +34,7 @@ if [ $? -ne 0 ]; then
         exit 2
     else
         echo "WARNING: User-data NOT mounted! Changes will be lost when the container is removed."
-        sudo -u duckie /bin/bash -c "mkdir -p ${JENKINS_HOME}"
+        sudo -u ${DT_USER_NAME} /bin/bash -c "mkdir -p ${JENKINS_HOME}"
     fi
 fi
 
@@ -57,7 +56,7 @@ else
 fi
 
 # run jenkins
-dt-exec sudo -u duckie /bin/bash -c "/usr/local/bin/jenkins.sh $*"
+dt-exec sudo -u ${DT_USER_NAME} /bin/bash -c "/usr/local/bin/jenkins.sh $*"
 
 # ----------------------------------------------------------------------------
 # YOUR CODE ABOVE THIS LINE

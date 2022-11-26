@@ -6,9 +6,6 @@ ARG MAINTAINER="Andrea F. Daniele (afdaniele@ttic.edu)"
 ARG ICON="cube"
 
 ARG USER=duckie
-ARG GROUP=duckie
-ARG UID=1000
-ARG GID=1000
 ARG HTTP_PORT=8080
 ARG AGENT_PORT=50000
 ARG JENKINS_HOME=/home/duckie/user-data
@@ -99,9 +96,6 @@ LABEL org.duckietown.label.module.type="${REPO_NAME}" \
 # <==================================================
 
 ARG USER
-ARG GROUP
-ARG UID
-ARG GID
 ARG HTTP_PORT
 ARG AGENT_PORT
 ARG JENKINS_HOME
@@ -116,15 +110,16 @@ ARG DOCKER_VERSION="20.10.7"
 ARG DOCKER_BUILDX_VERSION="0.9.1"
 ARG DOCKER_BUILDX_DOWNLOAD_URL="https://github.com/docker/buildx/releases/download/v${DOCKER_BUILDX_VERSION}/buildx-v${DOCKER_BUILDX_VERSION}.linux"
 
-ENV JENKINS_HOME ${JENKINS_HOME}
-ENV JENKINS_SLAVE_AGENT_PORT ${AGENT_PORT}
-ENV JENKINS_VERSION ${JENKINS_VERSION}
-ENV REF ${REF}
-ENV JENKINS_UC https://updates.jenkins.io
-ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
-ENV JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals
-ENV COPY_REFERENCE_FILE_LOG ${JENKINS_HOME}/copy_reference_file.log
-ENV JENKINS_ENABLE_FUTURE_JAVA=true
+# configure environment
+ENV JENKINS_HOME=${JENKINS_HOME} \
+    JENKINS_SLAVE_AGENT_PORT=${AGENT_PORT} \
+    JENKINS_VERSION=${JENKINS_VERSION} \
+    REF=${REF} \
+    JENKINS_UC=https://updates.jenkins.io \
+    JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental \
+    JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals \
+    COPY_REFERENCE_FILE_LOG=${JENKINS_HOME}/copy_reference_file.log \
+    JENKINS_ENABLE_FUTURE_JAVA=true
 
 # Configure PATH
 ENV PATH=${JENKINS_HOME}/.local/bin/:${PATH}
@@ -187,7 +182,8 @@ RUN /bin/bash -c '\
   && chmod +x /usr/lib/docker/cli-plugins/docker-buildx'
 
 # give the jenkins USER the power to create GROUPs
-RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
+# TODO: this can be removed, the user `jenkins` does not exist anymore
+#RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
 
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
