@@ -5,7 +5,7 @@
 duckietown-shell>=5.2.20
 
 # API to docker
-pydock>=0.0.5
+dockertown>=0.1.0
 
 # used to pin dependencies list to newest version available on pypi
 dt-pip-utils>=0.0.4
