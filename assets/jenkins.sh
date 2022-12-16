@@ -29,6 +29,12 @@ if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then
     )
   fi
 
+  # configure Jenkins to allow non-parameterized jobs to receive certain parameters as environment variables
+  java_opts_array+=( \
+    '-Dhudson.model.ParametersAction.keepUndefinedParameters=true' \
+    '-Dhudson.model.ParametersAction.safeParameters=PARENT_JOB_FAILED' \
+  )
+
   jenkins_opts_array=( )
   while IFS= read -r -d '' item; do
     jenkins_opts_array+=( "$item" )
