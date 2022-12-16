@@ -190,10 +190,10 @@ RUN echo "Downloading Jenkins from '${JENKINS_URL}'..." \
 # Change ownership of $REF
 RUN chown -R ${USER} "$REF"
 
-# for main web interface:
+# for main web interface
 EXPOSE ${HTTP_PORT}
 
-# will be used by attached slave agents:
+# will be used by attached slave agents
 EXPOSE ${AGENT_PORT}
 
 # switch to `duckie` user
@@ -204,3 +204,6 @@ COPY assets/jenkins-support /usr/local/bin/jenkins-support
 COPY assets/jenkins.sh /usr/local/bin/jenkins.sh
 COPY assets/plugins.sh /usr/local/bin/plugins.sh
 COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
+
+# switch back to 'root'
+USER root

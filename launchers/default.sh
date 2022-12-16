@@ -16,6 +16,13 @@ dt-launchfile-init
 DOCKER_SOCKET=/var/run/docker.sock
 DOCKER_GROUP=docker
 
+# impersonate
+if [ "${IMPERSONATE:-}" != "" ]; then
+    echo "Impersonating user with UID: ${IMPERSONATE}"
+    usermod -u ${IMPERSONATE} ${DT_USER_NAME}
+    groupmod -g ${IMPERSONATE} ${DT_USER_NAME}
+fi
+
 # make sure that a docker socket is present
 if [ ! -S ${DOCKER_SOCKET} ]; then
     echo "FATAL: Docker socket NOT found!"
@@ -47,11 +54,11 @@ if [ $(getent group ${DOCKER_GROUP}) ]; then
 else
     # try to create a new group with GID=DOCKER_GID
     echo "Creating group '${DOCKER_GROUP}'..."
-    sudo groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
+    groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
     if [ $? -ne 0 ]; then
         exit
     fi
-    sudo usermod -a -G ${DOCKER_GROUP} `whoami`
+    usermod -a -G ${DOCKER_GROUP} `whoami`
     echo "Done!"
 fi
 
