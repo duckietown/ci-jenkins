@@ -181,10 +181,6 @@ RUN /bin/bash -c '\
   # - make docker-buildx executable
   && chmod +x /usr/lib/docker/cli-plugins/docker-buildx'
 
-# give the jenkins USER the power to create GROUPs
-# TODO: this can be removed, the user `jenkins` does not exist anymore
-#RUN echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/jenkins_no_password
-
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
 RUN echo "Downloading Jenkins from '${JENKINS_URL}'..." \
