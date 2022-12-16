@@ -53,12 +53,13 @@ if [ $(getent group ${DOCKER_GROUP}) ]; then
     echo "Group '${DOCKER_GROUP}' found. No need to create it."
 else
     # try to create a new group with GID=DOCKER_GID
-    echo "Creating group '${DOCKER_GROUP}'..."
+    echo "Creating group '${DOCKER_GROUP}' with GID ${DOCKER_GID}..."
     groupadd --system --gid ${DOCKER_GID} ${DOCKER_GROUP}
     if [ $? -ne 0 ]; then
         exit
     fi
-    usermod -a -G ${DOCKER_GROUP} `whoami`
+    echo "Adding user '${DT_USER_NAME}' to group '${DOCKER_GROUP}'..."
+    usermod -a -G ${DOCKER_GROUP} ${DT_USER_NAME}
     echo "Done!"
 fi
 
