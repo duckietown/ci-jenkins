@@ -63,7 +63,7 @@ else
 fi
 
 # run jenkins
-dt-exec sudo -u ${DT_USER_NAME} /bin/bash -c "/usr/local/bin/jenkins.sh $*"
+dt-exec sudo -H -E -u ${DT_USER_NAME} /bin/bash -c "/usr/local/bin/jenkins.sh $*"
 
 # ----------------------------------------------------------------------------
 # YOUR CODE ABOVE THIS LINE
