@@ -16,12 +16,14 @@ dt-launchfile-init
 DOCKER_SOCKET=/var/run/docker.sock
 DOCKER_GROUP=docker
 
+# TODO: remove this, reuse IMPERSONATE_UID and IMPERSONATE_GID from dt-commons
 # impersonate
 if [ "${IMPERSONATE:-}" != "" ]; then
     echo "Impersonating user with UID: ${IMPERSONATE}"
     usermod -u ${IMPERSONATE} ${DT_USER_NAME}
     groupmod -g ${IMPERSONATE} ${DT_USER_NAME}
 fi
+# TODO: remove this, reuse IMPERSONATE_UID and IMPERSONATE_GID from dt-commons
 
 # make sure that a docker socket is present
 if [ ! -S ${DOCKER_SOCKET} ]; then
