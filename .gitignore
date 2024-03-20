@@ -7,3 +7,6 @@ html/*
 
 # otherwise CI thinks index not clean
 *.resolved
+
+# local sandbox
+user-data

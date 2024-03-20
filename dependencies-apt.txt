@@ -12,8 +12,8 @@ libfreetype6
 libfontconfig1
 openssh-client
 
-# java 11
-openjdk-11-jre-headless
+# java 21
+openjdk-21-jre-headless
 
 # dependencies needed to run dt-shell
 python3
@@ -26,5 +26,5 @@ libxml2-dev
 libxslt-dev
 zlib1g-dev
 
-# json cli
+# JSON processor
 jq

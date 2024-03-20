@@ -1,0 +1,8 @@
+name: "ci-jenkins"
+maintainer:
+    name: "Andrea F. Daniele"
+    email: "afdaniele@duckietown.com"
+description: "Jenkins application image for the Duckietown CI Infrastructure"
+version: 0.0.2
+# pick an icon from: https://fontawesome.com/v4.7.0/icons/
+icon: square
