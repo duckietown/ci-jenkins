@@ -2,7 +2,7 @@
 # NOTE: only place Duckietown libraries here; these libraries will be resolved to the latest available version and pinned; pin a specific version only if necessary
 
 # duckietown shell
-duckietown-shell>=5.2.20
+duckietown-shell>=6.0.2,<7
 
 # API to docker
 dockertown>=0.1.0

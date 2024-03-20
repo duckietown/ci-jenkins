@@ -1,6 +1,14 @@
 DOCKER_SOCKET=/var/run/docker.sock
 DOCKER_GROUP=docker
 
+# make sure the docker socket is available
+if [ -S ${DOCKER_SOCKET} ]; then
+    echo "Docker socket found at '${DOCKER_SOCKET}'."
+else
+    echo "Docker socket not found at '${DOCKER_SOCKET}'. Did you forget to mount it?"
+    exit
+fi
+
 # get docker GID
 DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
 

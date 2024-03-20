@@ -10,8 +10,8 @@ ARG HTTP_PORT=8080
 ARG AGENT_PORT=50000
 
 # Jenkins version (and jenkins.war SHA-256 checksum, download will be validated using it)
-ARG JENKINS_VERSION=2.361.4
-ARG JENKINS_SHA=b38fe218afb5447b0c9a6fa308d7ab762ac5a58dd89aa68b735067ad6c37c17b
+ARG JENKINS_VERSION=2.440.2
+ARG JENKINS_SHA=8126628e9e2f8ee2f807d489ec0a6e37fc9f5d6ba84fa8f3718e7f3e2a27312e
 
 # Can be used to customize where jenkins.war gets downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
