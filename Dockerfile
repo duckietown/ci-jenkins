@@ -225,3 +225,4 @@ COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
 
 # switch back to 'root'
 USER root
+ENV DT_SUPERUSER=0
