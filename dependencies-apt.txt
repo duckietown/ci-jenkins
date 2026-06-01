@@ -10,6 +10,7 @@ gpg-agent
 unzip
 libfreetype6
 libfontconfig1
+libharfbuzz0b
 openssh-client
 
 # java 21
