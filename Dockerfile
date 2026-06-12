@@ -12,6 +12,7 @@ ARG AGENT_PORT=50000
 # Jenkins version (and jenkins.war SHA-256 checksum, download will be validated using it)
 ARG JENKINS_VERSION=2.440.2
 ARG JENKINS_SHA=8126628e9e2f8ee2f807d489ec0a6e37fc9f5d6ba84fa8f3718e7f3e2a27312e
+ARG JENKINS_SLACK_PLUGIN_VERSION=722.vd07f1ea_7ff40
 
 # Can be used to customize where jenkins.war gets downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
@@ -131,6 +132,7 @@ ARG AGENT_PORT
 ARG JENKINS_VERSION
 ARG JENKINS_SHA
 ARG JENKINS_URL
+ARG JENKINS_SLACK_PLUGIN_VERSION
 ARG ARCH
 
 ARG DOCKER_DOWNLOAD_URL="https://download.docker.com/linux/static/stable"
@@ -214,14 +216,19 @@ EXPOSE ${HTTP_PORT}
 # will be used by attached slave agents
 EXPOSE ${AGENT_PORT}
 
-# switch to `duckie` user
-USER ${DT_USER_NAME}
-
 # jenkins scripts
 COPY assets/jenkins-support /usr/local/bin/jenkins-support
 COPY assets/jenkins.sh /usr/local/bin/jenkins.sh
 COPY assets/plugins.sh /usr/local/bin/plugins.sh
 COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
+COPY assets/jenkins-ref/ ${REF}/
+
+# install bundled Jenkins plugins into the reference home
+RUN install-plugins.sh "slack:${JENKINS_SLACK_PLUGIN_VERSION}" \
+  && chown -R ${DT_USER_NAME} "$REF"
+
+# switch to `duckie` user
+USER ${DT_USER_NAME}
 
 # switch back to 'root'
 USER root
