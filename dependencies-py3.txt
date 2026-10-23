@@ -2,3 +2,6 @@
 # NOTE: only place non-Duckietown libraries here; pin versions only if necessary
 
 packaging
+cryptography>=44,<51
+Cython>=3.0.12,<4
+setuptools>=78.1.1,<82

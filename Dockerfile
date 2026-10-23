@@ -221,10 +221,12 @@ COPY assets/jenkins-support /usr/local/bin/jenkins-support
 COPY assets/jenkins.sh /usr/local/bin/jenkins.sh
 COPY assets/plugins.sh /usr/local/bin/plugins.sh
 COPY assets/install-plugins.sh /usr/local/bin/install-plugins.sh
+COPY assets/image_release.py /usr/local/bin/dt-ci-image-release
 COPY assets/jenkins-ref/ ${REF}/
 
 # install bundled Jenkins plugins into the reference home
 RUN install-plugins.sh "slack:${JENKINS_SLACK_PLUGIN_VERSION}" \
+  && chmod 755 /usr/local/bin/dt-ci-image-release \
   && chown -R ${DT_USER_NAME} "$REF"
 
 # switch to `duckie` user
